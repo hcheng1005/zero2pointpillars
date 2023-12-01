@@ -1,0 +1,5 @@
+ops/build/*
+ops/*.so
+ops/pointpillars.egg-info/*
+model/__pycache__/*
+.vscode/settings.json
