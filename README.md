@@ -20,6 +20,10 @@
 
 [一文带你搞懂Python中pickle模块](https://zhuanlan.zhihu.com/p/419362785)
 
+[Pytorch技巧:DataLoader的collate_fn参数使用详解](https://zhuanlan.zhihu.com/p/361830892)
+
+[torch.optim.lr_scheduler.OneCycleLR学习与理解](https://blog.csdn.net/jiongta9473/article/details/131246851)
+
 ### 2023.12.01
 
 [终于搞懂了 super(XXXX, self).__init__()的作用是啥了](https://blog.csdn.net/weixin_44025103/article/details/126143715)

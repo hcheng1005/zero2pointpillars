@@ -48,6 +48,8 @@ class PillarLayer(nn.Module):
         for i, cur_coors in enumerate(coors):
             coors_batch.append(F.pad(cur_coors, (1, 0), value=i))
         coors_batch = torch.cat(coors_batch, dim=0) # (p1 + p2 + ... + pb, 1 + 3)
+        
+        return pillars, coors_batch, npoints_per_pillar
 
 
 '''
@@ -75,7 +77,7 @@ class PillarEncoder(nn.Module):
         device = pillars.device
         
         # 1. 计算每个pillar里的point到点云中心位置的offset
-        offset_pt_center = pillars[:, :, 3] - torch.sum(pillars[:, :, 3], dim=1, keepdim=True) / npoints_per_pillar[:, None, None]
+        offset_pt_center = pillars[:, :, :3] - torch.sum(pillars[:, :, :3], dim=1, keepdim=True) / npoints_per_pillar[:, None, None]
         
         # 2. 计算每个pillar里的point到该pillar中心位置的offset
         x_offset_pi_center = pillars[:, :, :1] - (coors_batch[:, None, 1:2] * self.vx + self.x_offset) # (p1 + p2 + ... + pb, num_points, 1)
@@ -202,10 +204,9 @@ class Neck(nn.Module):
         return: (bs, 384, 248, 216)
         '''
         outs=[]
-        
-        for i in range(self.decoder_blocks):
-            x = self.decoder_blocks[i](x)
-            outs.append(x)
+        for i in range(len(self.decoder_blocks)):
+            xi = self.decoder_blocks[i](x[i]) 
+            outs.append(xi)
             
         out = torch.cat(outs, dim=1)
         
@@ -465,6 +466,7 @@ class PointPillars(nn.Module):
         batched_anchors = [anchors for _ in range(batch_size)]
         
         if mode == 'train':
+            # gtbox与anchor分配
             anchor_target_dict = anchor_target(batched_anchors=batched_anchors, 
                                                batched_gt_bboxes=batched_gt_bboxes, 
                                                batched_gt_labels=batched_gt_labels, 

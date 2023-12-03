@@ -5,6 +5,12 @@ from torch.utils.data import DataLoader
 from functools import partial
 
 
+'''
+names: 
+description: 自定义取样本的函数，可以定义自己的函数来准确地实现想要的功能
+param {*} list_data
+return {*}
+'''
 def collate_fn(list_data):
     batched_pts_list, batched_gt_bboxes_list = [], []
     batched_labels_list, batched_names_list = [], []
@@ -39,7 +45,7 @@ def collate_fn(list_data):
 
 def get_dataloader(dataset, batch_size, num_workers, shuffle=True, drop_last=False):
     collate = collate_fn
-    dataloader = DataLoader(
+    dataloader =  DataLoader(
         dataset=dataset,
         batch_size=batch_size,
         shuffle=shuffle,
